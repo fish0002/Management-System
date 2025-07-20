@@ -30,13 +30,13 @@ export default defineConfig({
       }
    },
    server: {
-      host: 'localhost',
+      host: '192.168.146.1',
       port: 9999,
       open: true,
       // 添加代理配置示例
       proxy: {
          '/api': {
-            target: 'https://api.example.com',
+            target: 'http://36.50.226.35:47980',
             changeOrigin: true,
             rewrite: path => path.replace(/^\/api/, '')
          }

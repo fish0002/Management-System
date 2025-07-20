@@ -9,24 +9,20 @@
          </div>
 
          <el-form ref="loginFormRef" :model="loginForm" :rules="loginRules" label-position="top" class="login-form">
-            <el-form-item label="用户名" prop="username">
-               <el-input v-model="loginForm.username" prefix-icon="User" placeholder="请输入用户名" clearable>
+            <el-form-item label="用户名" prop="userAccount">
+               <el-input v-model="loginForm.userAccount" prefix-icon="User" placeholder="请输入用户名" clearable>
                </el-input>
             </el-form-item>
 
-            <el-form-item label="密码" prop="password">
+            <el-form-item label="密码" prop="userPassword">
                <el-input
-                  v-model="loginForm.password"
+                  v-model="loginForm.userPassword"
                   prefix-icon="Lock"
                   type="password"
                   placeholder="请输入密码"
                   show-password
                   clearable>
                </el-input>
-            </el-form-item>
-
-            <el-form-item prop="remember">
-               <el-checkbox v-model="loginForm.remember">记住密码</el-checkbox>
             </el-form-item>
 
             <el-form-item>
@@ -45,17 +41,19 @@
 <script setup lang="ts">
 import { ref, reactive, toRefs } from 'vue';
 import { useRouter } from 'vue-router';
+import { userlogin } from '@/api/user/index';
 import { Lock, User } from '@element-plus/icons-vue';
 import { ElMessage } from 'element-plus';
+import { useStore } from '@/store/user';
 
 const router = useRouter();
+const store = useStore();
 const loginFormRef = ref<InstanceType<(typeof import('element-plus/es'))['ElForm']>>();
 
 // 登录表单数据
 const loginForm = reactive({
-   username: '',
-   password: '',
-   remember: false
+   userAccount: '',
+   userPassword: ''
 });
 
 // 表单验证规则
@@ -75,7 +73,27 @@ const loading = ref(false);
 
 // 登录处理
 const handleLogin = () => {
-   router.push('/view/home');
+   userlogin(loginForm).then(res => {
+      if (res.code == 0) {
+         ElMessage({
+            showClose: true,
+            message: res.message,
+            type: 'success'
+         });
+         store.setuser(res.data);
+         router.push('/view/home');
+      } else {
+         ElMessage({
+            message: res.message,
+            type: 'error',
+            plain: true
+         });
+      }
+      console.log(res);
+   });
+   console.log(loginForm);
+
+   // router.push('/view/home');
 };
 </script>
 

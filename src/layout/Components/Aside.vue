@@ -8,26 +8,23 @@
       active-text-color="#ffd04b"
       background-color="#545c64"
       class="el-menu-vertical-demo"
-      default-active="2"
+      :default-active="route.path"
       text-color="#fff"
       @open="handleOpen"
-      @close="handleClose">
+      @close="handleClose"
+      :router="true">
       <div v-for="(item, index) in menu" :key="index">
-         <el-menu-item v-if="!item.meta.level" index="4" @click="router.push(`/view/${item.path}`)">
+         <el-menu-item v-if="!item.meta.level" :index="`/view/${item.path}`">
             <el-icon><component :is="item.meta.icon" /></el-icon>
 
             <span>{{ item.meta.title || 'null' }}</span>
          </el-menu-item>
-         <el-sub-menu v-else index="1">
+         <el-sub-menu v-else :index="index">
             <template #title>
                <el-icon><component :is="item.meta.icon" /></el-icon>
                <span>{{ item.meta.title }}</span>
             </template>
-            <el-menu-item
-               v-for="i in item.children"
-               :key="i.path"
-               index="1-1"
-               @click="router.push(`/view/${item.path}/${i.path}`)">
+            <el-menu-item v-for="i in item.children" :key="i.path" :index="`/view/${item.path}/${i.path}`">
                <el-icon><component :is="i.meta.icon" /></el-icon>
                {{ i.meta.title }}
             </el-menu-item>
@@ -37,11 +34,12 @@
 </template>
 
 <script setup lang="ts">
-import { useRouter } from 'vue-router';
+import { useRouter, useRoute } from 'vue-router';
 import MENU from '@/router/router';
 import { onMounted, ref } from 'vue';
 const menu = ref([]);
 const router = useRouter();
+const route = useRoute();
 onMounted(() => {
    let arr = [];
    for (let i of MENU) {

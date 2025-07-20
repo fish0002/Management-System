@@ -11,7 +11,7 @@ pnpm add vue-router@4
 pnpm i vue-router-tab -S
 pnpm install pinia
 pnpm install sass sass-loader --save-dev
-
+pnpm install axios
 pnpm install element-plus
 pnpm install -D unplugin-vue-components unplugin-auto-import
 ```

@@ -18,10 +18,10 @@
 
          <el-dropdown :hide-on-click="false" placement="bottom-end">
             <div class="user-profile">
-               <img src="https://picsum.photos/32/32" alt="用户头像" class="user-avatar" />
+               <img :src="user.userinfo.userAvatar" alt="用户头像" class="user-avatar" />
                <div class="user-info">
-                  <div class="user-name">管理员</div>
-                  <div class="user-email">admin@example.com</div>
+                  <div class="user-name">{{ user.userinfo.userRole }}</div>
+                  <div class="user-email">{{ user.userinfo.qqEmail }}</div>
                </div>
                <i class="fa fa-angle-down user-dropdown-icon"></i>
             </div>
@@ -31,9 +31,7 @@
                   <el-dropdown-item icon="el-icon-setting">账号设置</el-dropdown-item>
                   <el-dropdown-item icon="el-icon-message">消息中心</el-dropdown-item>
 
-                  <el-dropdown-item icon="el-icon-switch-button" @click="router.push('/login')"
-                     >退出登录</el-dropdown-item
-                  >
+                  <el-dropdown-item icon="el-icon-switch-button" @click="gotologin">退出登录</el-dropdown-item>
                </el-dropdown-menu>
             </template></el-dropdown
          >
@@ -44,7 +42,35 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router';
 
+import { ElMessage } from 'element-plus';
+import { userout } from '@/api/user';
+import { useStore } from '@/store/user';
+const user = useStore();
+
 const router = useRouter();
+const gotologin = () => {
+   userout().then(res => {
+      console.log(res);
+
+      // 接口cookie清除后逻辑
+      // 1. 全局用户信息设置为未登录
+
+      const userRole = {
+         userRole: 'NOLOGIN' //未登录
+      };
+      user.setuser(userRole);
+      // 2. 弹出 窗口 用户退出登陆成功，根
+      // 否则也跳转登陆页
+      ElMessage({
+         message: '退出登录',
+         type: 'success',
+         duration: 400,
+         onClose: () => {
+            router.push('/login');
+         }
+      });
+   });
+};
 </script>
 
 <style lang="scss" scoped>
